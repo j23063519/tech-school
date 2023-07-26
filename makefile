@@ -1,6 +1,6 @@
 include .env
 
-.PHONY : build up down start restart stop rm test rmimg rmsys execdb createdb dropdb migrateup migratedown
+.PHONY : build up down start restart stop rm test rmimg rmsys execdb createdb dropdb migrateup migratedown sqlc
 
 build:
 	docker compose -f docker-compose.${APP_ENV}.yaml --env-file .env build
@@ -54,3 +54,6 @@ migrateup:
 
 migratedown:
 	migrate -path db/migration -database "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable" -verbose down
+
+sqlc:
+	sqlc generate

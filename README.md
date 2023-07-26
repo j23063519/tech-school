@@ -2,13 +2,15 @@
 
 ## Project Introduction
 
-該專案為跟著 tech school 練習 golang 後端應用包含docker、postgres、k8s、aws、grpc、redis等應用，所參考學習資源為https://github.com/techschool/simplebank，含youtube影片，雖然是跟著學習但仍有些許地方會不一樣！
+I'm following the "tech school" video tutorial to learn golang、docker、postgres、k8s、aws、grpc、redis etc knowledges.
+
+reference: https://github.com/techschool/simplebank
 
 ## Project Excution
 
-<!-- 建立table -->
+<!-- create table -->
 1. make migrateup
-<!-- 刪除table -->
+<!-- drop table -->
 2. make migratedown
 
 ## Folder Structure
