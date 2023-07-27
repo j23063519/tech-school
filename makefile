@@ -25,6 +25,7 @@ stop:
 rm:
 	docker compose -f docker-compose.${APP_ENV}.yaml rm --force
 
+# -v: 顯示測試結果 -cover: 顯示測試覆蓋率
 test:
 	go test -v -cover ./...
 

@@ -21,6 +21,7 @@ reference: https://github.com/techschool/simplebank
   - migration
   - query
   - sqlc
+- util
 
 ### Folder Structure Explanation
 
@@ -28,6 +29,7 @@ reference: https://github.com/techschool/simplebank
   1. `migration: 資料庫遷移`: 存放 資料庫遷移等 sql檔案
   2. `query: CRUD sql`: 存放 新刪修查等 sql檔案
   3. `sqlc: sqlc 所產生的檔案`: 存放 sqlc 所產生的 新刪修查等 go檔案
+- `util: 輔助套件`:這裡會存放一些第三方套件或自訂套件
 
 ## Go Packages
 
@@ -39,6 +41,16 @@ brew install golang-migrate
 ### sqlc <https://github.com/kyleconroy/sqlc>
 ```bash
 brew install sqlc
+```
+
+### lib/pq <https://github.com/lib/pq>
+```bash
+go get github.com/lib/pq
+```
+
+### testify <https://github.com/stretchr/testify>
+```bash
+go get github.com/stretchr/testify
 ```
 
 ## command line
