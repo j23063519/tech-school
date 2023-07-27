@@ -25,7 +25,7 @@ reference: https://github.com/techschool/simplebank
 ### Folder Structure Explanation
 
 - `db: 資料庫`:這裡會存放 database 資料庫相關的目錄，此資料夾底下會有:
-  1. `migration: 資料庫遷移`: 存放 資料庫遷移等 sql檔案:
+  1. `migration: 資料庫遷移`: 存放 資料庫遷移等 sql檔案
   2. `query: CRUD sql`: 存放 新刪修查等 sql檔案
   3. `sqlc: sqlc 所產生的檔案`: 存放 sqlc 所產生的 新刪修查等 go檔案
 
@@ -46,4 +46,52 @@ brew install sqlc
 ```bash
 # 查詢 docker run 的歷史紀錄 (mac)
 history | grep "docker run"
+
+# 建立 image
+make build
+
+# 建立新的 image 並在背景執行容器(應用程式)
+make up
+
+# 結束應用程式、清除所有容器包含 image 及 掛載的資料
+make down
+
+# 啟動應用程式
+make start
+
+# 重啟應用程式
+make restart
+
+# 暫停應用程式
+make stop
+
+# 刪除且停止容器
+make rm
+
+# 執行測試
+make test
+
+# 刪除所有未使用的 image
+make rmimg 
+
+# 刪除所有未使用的 container image network cache
+make rmsys
+
+# 執行並進入db容器
+make execdb
+
+# 建立資料庫 資料庫名稱須自行更改
+make createdb
+
+# 刪除資料庫 資料庫名稱須自行更改
+make dropdb
+
+# 執行新增資料表、欄位、索引
+make migrateup
+
+# 回朔所新增的資料表、欄位、索引
+make migratedown
+
+# 根據 sql檔案 而產生 go檔案
+make sqlc
 ```
