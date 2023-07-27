@@ -1,4 +1,4 @@
-# Tech School
+# Learning Golang from Tech School
 
 ## Project Introduction
 
@@ -8,20 +8,26 @@ reference: https://github.com/techschool/simplebank
 
 ## Project Excution
 
+<!-- excution all docker -->
+1. make up
 <!-- create table -->
-1. make migrateup
-<!-- drop table -->
-2. make migratedown
+2. make migrateup
+<!-- generate CRUD go file from sqlc -->
+3. make sqlc
 
 ## Folder Structure
 
 - db
   - migration
+  - query
+  - sqlc
 
 ### Folder Structure Explanation
 
 - `db: 資料庫`:這裡會存放 database 資料庫相關的目錄，此資料夾底下會有:
   1. `migration: 資料庫遷移`: 存放 資料庫遷移等 sql檔案:
+  2. `query: CRUD sql`: 存放 新刪修查等 sql檔案
+  3. `sqlc: sqlc 所產生的檔案`: 存放 sqlc 所產生的 新刪修查等 go檔案
 
 ## Go Packages
 
