@@ -114,6 +114,59 @@ func TestTransferTx(t *testing.T) {
 	require.Equal(t, account2.Balance+int64(n)*amount, updateAccount2.Balance)
 }
 
+func TestTransferTxDeadlock(t *testing.T) {
+	store := NewStore(testDB)
+
+	account1 := createRandomAccount(t)
+	account2 := createRandomAccount(t)
+	fmt.Println(">> before:", account1.Balance, account2.Balance)
+
+	// run n concurrent transfer transations
+	n := 10
+	amount := int64(10)
+
+	errs := make(chan error)
+
+	for i := 0; i < n; i++ {
+		fromAccountID := account1.ID
+		toAccountID := account2.ID
+
+		if i%2 == 1 {
+			fromAccountID = account2.ID
+			toAccountID = account1.ID
+		}
+
+		go func() {
+			ctx := context.Background()
+			_, err := store.TransferTx(ctx, CreateTransferParams{
+				FromAccountID: fromAccountID,
+				ToAccountID:   toAccountID,
+				Amount:        amount,
+			})
+
+			errs <- err
+		}()
+	}
+
+	// check results
+	for i := 0; i < n; i++ {
+		err := <-errs
+		require.NoError(t, err)
+
+	}
+
+	// check the final updated balance
+	updateAccount1, err := store.GetAccount(context.Background(), account1.ID)
+	require.NoError(t, err)
+
+	updateAccount2, err := store.GetAccount(context.Background(), account2.ID)
+	require.NoError(t, err)
+
+	fmt.Println(">> after:", updateAccount1.Balance, updateAccount2.Balance)
+	require.Equal(t, account1.Balance, updateAccount1.Balance)
+	require.Equal(t, account2.Balance, updateAccount2.Balance)
+}
+
 // 模擬 deadlock in postgresql
 // BEGIN;
 
@@ -201,3 +254,51 @@ func TestTransferTx(t *testing.T) {
 // 上述兩個解決方式詳解：
 // 由於 postgres 擔心 transaction 1 會更改到 accounts表中的欄位 ID，這樣會影響到 transfers 表的外鍵約束，進而lock住
 // 所以我們必須告訴 postgres 我們不會改變 id 的值也就是(FOR NO KEY UPDATE)，這樣就不會產生 deadlock 了
+
+// =======================================================
+// 模擬另一種情形所造成的 deadlock：
+// 上面一種測試都是做同樣的測試，都是從account1 匯錢過去給 account2，但是若是發生從account2 匯錢過去給 account1呢？
+// Tx1: transfer $10 from account 1 to account 2
+// BEGIN;
+// UPDATE accounts SET balance = balance - 10 WHERE id = 1 RETURNING *;
+// UPDATE accounts SET balance = balance + 10 WHERE id = 2 RETURNING *;
+// ROLLBACK;
+// Tx2: transfer $10 from account 2 to account 1
+// BEGIN;
+// UPDATE accounts SET balance = balance - 10 WHERE id = 2 RETURNING *;
+// UPDATE accounts SET balance = balance + 10 WHERE id = 1 RETURNING *;
+// ROLLBACK;
+
+// =======================================================
+// 試錯的執行步驟:
+// 開啟兩個terminal:分別為 a 與 b
+// 分別都進入db容器內，make execdb
+// a 執行：BEGIN;
+// a 執行：UPDATE accounts SET balance = balance - 10 WHERE id = 1 RETURNING *;
+// b 執行：BEGIN;
+// b 執行：UPDATE accounts SET balance = balance - 10 WHERE id = 2 RETURNING *;
+// a 執行：UPDATE accounts SET balance = balance + 10 WHERE id = 2 RETURNING *; (這時就會 block 住，因爲第二個 transaction 也在對同個account 做修改)
+// b 執行：UPDATE accounts SET balance = balance + 10 WHERE id = 1 RETURNING *; (這時就會 deadlock，簡單來說就是這兩個併發的transaction 都在互相等著對方就形成無限循環，然後就造成 deadlock 情形發生)
+
+// =======================================================
+// 若要解決此情形發生，得要變化執行SQL的順序:
+// Tx1: transfer $10 from account 1 to account 2
+// BEGIN;
+// UPDATE accounts SET balance = balance - 10 WHERE id = 1 RETURNING *;
+// UPDATE accounts SET balance = balance + 10 WHERE id = 2 RETURNING *;
+// ROLLBACK;
+// Tx2: transfer $10 from account 2 to account 1
+// BEGIN;
+// UPDATE accounts SET balance = balance + 10 WHERE id = 1 RETURNING *; (這行先執行)
+// UPDATE accounts SET balance = balance - 10 WHERE id = 2 RETURNING *; (這行後執行)
+// ROLLBACK;
+//
+// 執行步驟：
+// a 執行：BEGIN;
+// a 執行：UPDATE accounts SET balance = balance - 10 WHERE id = 1 RETURNING *;
+// b 執行：BEGIN;
+// b 執行：UPDATE accounts SET balance = balance + 10 WHERE id = 1 RETURNING *;
+// a 執行：UPDATE accounts SET balance = balance + 10 WHERE id = 2 RETURNING *;
+// a 執行：COMMIT; (這時 b 這裡就不會 block 住)
+// b 執行：UPDATE accounts SET balance = balance - 10 WHERE id = 2 RETURNING *;
+// b 執行：COMMIT;
