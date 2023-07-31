@@ -19,6 +19,7 @@ reference: https://github.com/techschool/simplebank
 
 - .github
   - workflows
+- api
 - db
   - migration
   - query
@@ -29,6 +30,7 @@ reference: https://github.com/techschool/simplebank
 
 - `.github: git`: 這裡存放 git 版本控制相關的目錄:
   1. `workflows: github action`: 存放 ci/cd 相關設定xxx.yml檔案
+- `api: restful api`: 這裡存放 api 相關檔案包含middleware及validation
 - `db: 資料庫`:這裡會存放 database 資料庫相關的目錄，此資料夾底下會有:
   1. `migration: 資料庫遷移`: 存放 資料庫遷移等 sql檔案
   2. `query: CRUD sql`: 存放 新刪修查等 sql檔案
@@ -55,6 +57,11 @@ go get github.com/lib/pq
 ### testify <https://github.com/stretchr/testify>
 ```bash
 go get github.com/stretchr/testify
+```
+
+### gin <https://github.com/gin-gonic/gin>
+```bash
+go get -u github.com/gin-gonic/gin
 ```
 
 ## command line

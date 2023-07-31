@@ -1,6 +1,6 @@
 include .env
 
-.PHONY : build up down start restart stop rm test rmimg rmsys execdb createdb dropdb migrateup migratedown sqlc
+.PHONY : build up down start restart stop rm test rmimg rmsys execdb createdb dropdb migrateup migratedown sqlc server
 
 build:
 	docker compose -f docker-compose.${APP_ENV}.yaml --env-file .env build
@@ -58,3 +58,6 @@ migratedown:
 
 sqlc:
 	sqlc generate
+
+server:
+	go run main.go
