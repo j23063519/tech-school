@@ -1,13 +1,13 @@
-include .env
+include local.env
 
 .PHONY : build up down start restart stop rm test rmimg rmsys execdb createdb dropdb migrateup migratedown sqlc server
 
 build:
-	docker compose -f docker-compose.${APP_ENV}.yaml --env-file .env build
+	docker compose -f docker-compose.${APP_ENV}.yaml --env-file ${APP_ENV}.env build
 
 # -d: 表示背景執行, --build: 重新建立新的image
 up:
-	docker compose -f docker-compose.${APP_ENV}.yaml --env-file .env up -d --build
+	docker compose -f docker-compose.${APP_ENV}.yaml --env-file ${APP_ENV}.env up -d --build
 
 # -v: 表示連資料也清空 --rmi type: 刪除image，後面的type是local或是all
 down:

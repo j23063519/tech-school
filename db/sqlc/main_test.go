@@ -6,19 +6,25 @@ import (
 	"os"
 	"testing"
 
+	"github.com/j23063519/tech-school/util"
 	_ "github.com/lib/pq"
 )
 
 const (
 	dbDriver = "postgres"
-	dbSource = "postgresql://user:pwd@localhost:5432/tech_school?sslmode=disable"
 )
 
 var testQueries *Queries
 var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-	var err error
+	config, err := util.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("can't load config:", err)
+	}
+
+	dbSource := "postgresql://" + config.POSTGRESUSER + ":" + config.POSTGRESPASSWORD + "@localhost:" + config.POSTGRESPORT + "/" + config.POSTGRESDB + "?sslmode=disable"
+
 	testDB, err = sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal("can't connect to database:", err)

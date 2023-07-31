@@ -64,6 +64,11 @@ go get github.com/stretchr/testify
 go get -u github.com/gin-gonic/gin
 ```
 
+### viper <https://github.com/spf13/viper>
+```bash
+go get github.com/spf13/viper
+```
+
 ## command line
 
 ```bash
