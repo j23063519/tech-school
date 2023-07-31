@@ -56,6 +56,13 @@ jobs:
 
     - name: Run migrations
       run: make migrateup
+    
+    - name: Install sqlc
+      run: |
+        sudo snap install sqlc
+        sqlc version
 
     - name: Test
-      run: make test
+      run: |
+        make sqlc
+        make test
