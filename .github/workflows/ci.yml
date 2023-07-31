@@ -28,6 +28,9 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
           TZ: ${{ secrets.TZ }}
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - ${{ secrets.POSTGRES_PORT }}:${{ secrets.POSTGRES_PORT }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
