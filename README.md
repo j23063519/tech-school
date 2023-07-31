@@ -22,6 +22,7 @@ reference: https://github.com/techschool/simplebank
 - api
 - db
   - migration
+  - mock
   - query
   - sqlc
 - util
@@ -33,8 +34,9 @@ reference: https://github.com/techschool/simplebank
 - `api: restful api`: 這裡存放 api 相關檔案包含middleware及validation
 - `db: 資料庫`:這裡會存放 database 資料庫相關的目錄，此資料夾底下會有:
   1. `migration: 資料庫遷移`: 存放 資料庫遷移等 sql檔案
-  2. `query: CRUD sql`: 存放 新刪修查等 sql檔案
-  3. `sqlc: sqlc 所產生的檔案`: 存放 sqlc 所產生的 新刪修查等 go檔案
+  2. `mock: mockgen 所產生的檔案`: 存放假資料
+  3. `query: CRUD sql`: 存放 新刪修查等 sql檔案
+  4. `sqlc: sqlc 所產生的檔案`: 存放 sqlc 所產生的 新刪修查等 go檔案
 - `util: 輔助套件`:這裡會存放一些第三方套件或自訂套件
 
 ## Go Packages
@@ -67,6 +69,12 @@ go get -u github.com/gin-gonic/gin
 ### viper <https://github.com/spf13/viper>
 ```bash
 go get github.com/spf13/viper
+```
+
+### mockgen <https://github.com/uber-go/mock>
+```bash
+go install go.uber.org/mock/mockgen@latest
+go get go.uber.org/mock/mockgen/model
 ```
 
 ## command line
@@ -122,4 +130,10 @@ make migratedown
 
 # 根據 sql檔案 而產生 go檔案
 make sqlc
+
+# 啟動server
+make server
+
+# 建立 mock
+make mock
 ```

@@ -1,6 +1,6 @@
 include local.env
 
-.PHONY : build up down start restart stop rm test rmimg rmsys execdb createdb dropdb migrateup migratedown sqlc server
+.PHONY : build up down start restart stop rm test rmimg rmsys execdb createdb dropdb migrateup migratedown sqlc server mock
 
 build:
 	docker compose -f docker-compose.${APP_ENV}.yaml --env-file ${APP_ENV}.env build
@@ -61,3 +61,6 @@ sqlc:
 
 server:
 	go run main.go
+
+mock:
+	mockgen -package mockdb -destination db/mock/store.go github.com/j23063519/tech-school/db/sqlc Store
