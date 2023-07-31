@@ -1,3 +1,2 @@
-db/sqlc/*
-
-!db/sqlc/*_test.go
+*.log
+.vscode
