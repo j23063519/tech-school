@@ -77,6 +77,21 @@ go install go.uber.org/mock/mockgen@latest
 go get go.uber.org/mock/mockgen/model
 ```
 
+### uuid <https://github.com/google/uuid>
+```bash
+go get github.com/google/uuid
+```
+
+### jwt <https://github.com/golang-jwt/jwt>
+```bash
+go get -u github.com/golang-jwt/jwt/v5
+```
+
+### paseto <https://github.com/o1egl/paseto>
+```bash
+go get -u github.com/o1egl/paseto
+```
+
 ## command line
 
 ```bash
